@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Covid Tracker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</head>
+<body onload="dispState()">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">COVID-19 TRACKER</a>
+      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="navbar-collapse collapse justify-content-end" id="navbarColor02" >
+        <div class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" id="search" placeholder="Search" oninput="searchState()">
+          <button class="btn btn-outline-warning my-2 my-sm-0" type="submit" onclick="searchState()">Search</button>
+        </div>
+      </div>
+    </nav>
+    <div class="jumbotron">
+        <p class="lead"> covid cases state wise in india </p>
+        <hr class>
+    
+        <table class="table table-hover table-bordered ">
+    
+          <thead class="thead-dark">
+            <tr>
+                <td >state</td>
+                <td onclick="descend()">active</td>
+                <td>confirmed</td>
+                <td>deaths</td>
+                <td>recovered</td>
+             
+            </tr>
+          </thead>
+    
+    
+          <tbody id="FillTable">
+              <tr class="table-primary">
+            
+              <td>example</td>
+              <td>example</td>
+              <td>example</td>
+              <td>example</td>
+              <td>example</td>
+            </tr>
+          </tbody>
+    
+        </table> 
+        <footer style="text-align: center;" style="margin-top: 10px;">
+          copyrights &copy; saketh
+        </footer>
+</div>
+</div>
+
+<script>
+
+var parser =(data,type)=>{
+        let i;
+        let str="";
+        for(i=1;i<=38;i++){
+            if(type="display"|| data['statewise'][i-1]['state'].includes(type) ){
+                
+                str+=`<tr class="table-primary">
+                <td>${data["statewise"][i-1]["state"]}</td>
+                <td>${data["statewise"][i-1]["active"]}</td> 
+                <td>${data["statewise"][i-1]["confirmed"]}</td> 
+                <td>${data["statewise"][i-1]["deaths"]}</td>
+                <td>${data["statewise"][i-1]["recovered"]}</td>
+                </tr>`
+                
+
+            }
+
+
+        }
+        return  str;
+}
+
+    var dispState= async()=>{
+        let apidata= await fetch("https://api.covid19india.org/data.json");
+        let data=await apidata.json();
+        console.log(data);
+        let htmlElements=parser(data,"display");
+        document.getElementById("FillTable").innerHTML=htmlElements;
+
+    }
+
+    var searchState= async ()=>{
+        let searchValue=document.getElementById("search").value;
+        console.log(searchValue);
+        let apidata= await fetch("https://api.covid19india.org/data.json");
+        let data=await apidata.json();
+        
+        let htmlElements=dummy(data,searchValue);
+        document.getElementById("FillTable").innerHTML=htmlElements;
+
+    
+    }
+    var dummy =(data,type)=>{
+      let i;
+        let str="";
+        for(i=1;i<=38;i++){
+            if(data['statewise'][i-1]['state'].toLowerCase().includes(type.toLowerCase()) ){
+               
+                console.log(type);
+                str+=`<tr class="table-primary">
+                <td>${data["statewise"][i-1].state}</td>
+                <td>${data["statewise"][i-1].active}</td> 
+                <td>${data["statewise"][i-1].confirmed}</td> 
+                <td>${data["statewise"][i-1].deaths}</td>
+                <td>${data["statewise"][i-1].recovered}</td>
+                </tr>`
+                
+
+            }
+
+
+        }
+        return  str;
+}
+
+
+</script>
+</body>
+</html>
+
+
+
+    
+   
+
+
